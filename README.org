@@ -288,8 +288,8 @@ gittutorial ディレクトリのルートで、以下のコマンドを打っ�
 - ~git commit -m "message"~ :: ステージに追加したファイルの変更履歴を記録(コミット)する。
   コミットメッセージは必ず書く。
 
-- ~git merge <branch>~ ::
+- ~git merge <branch>~ :: <branch> を現在のブランチへマージする。
 
 - ~git fetch~ :: リモートレポジトリの変更内容を取得。
 
-- ~git pull~ ::
+- ~git pull~ :: ~git fetch~ のあとに ~git merge~ を連続で行う。
