@@ -6,12 +6,17 @@ build-backend = "setuptools.build_meta"
 name = "gittutorial"
 dynamic = ["version"]
 requires-python = ">= 3.8"
-author = "sugayu"
+authors = [
+    {name="sugayu"}
+]
 description = "Git Tutorial Package."
-readme = "README.org"
+readme = "README.rst"
 license = {text = "MIT License"}
 dependencies = [
     "numpy"
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
 ]
 
 [tool.setuptools.packages.find]
@@ -19,9 +24,6 @@ where = ["src"]
 
 [tool.setuptools.dynamic]
 version = {attr = "gittutorial._version.__version__"}
-classifiers = [
-    "License :: OSI Approved :: MIT License",
-]
 
 [tool.black]
 skip-string-normalization = true

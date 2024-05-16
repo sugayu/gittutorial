@@ -158,7 +158,7 @@ ssh 接続はパスワード認証よりも鍵認証の方が推奨されてい�
 必須ではないがおすすめ： ~conda~ で新しく環境を作成する。
 環境を作成したのち、その環境でチュートリアル用のコードをダウンロードする。
 #+begin_src bash
-  create -n gittutorial python=3.9
+  conda create -n gittutorial python=3.9
   conda activate gittutorial
   pip install git+ssh://git@github.com/sugayu/gittutorial.git
 #+end_src
