@@ -4,15 +4,110 @@ Git のチュートリアルを提供するためのリポジトリ。
 * 手順
 ** 練習1: Gitを使って履歴を残す
 この練習はローカルの作業で完結する。
+日々の作業に使う感覚で Git を扱えるようになることが目標。
 
-*** コードの編集
-~dev~ からブランチ ~feature-work~ を切って、 ~feature-work~ へ移動する。
+*** 作業ディレクトリを作る
+好きな場所にディレクトリを作成し、中に入る。
+~git init~ をして Git を準備する。
+~ls -a~ で ~.git~ ディレクトリが作成されたことを確認する。
 
-エディタでコードを編集する。
-file:src/gittutorial/module.py モジュールの中の ~print_what_working_on~ 関数を編集して、
-~works~ 変数に、あなたの研究内容の短い説明を加える。
+*** ファイルを編集する
+好きなようにファイルを作成する。
 
-** 練習2の準備: gitレポジトリの準備
+好きなものが無い場合のチュートリアル：
+ターミナルの練習としてファイル作成の複数の方法を試してみる。
+作ったファイルの中身は ~cat~, ~more~, ~less~ などで確認できる。
+1. ~touch doc1.txt~ で空ファイルを作成する。
+2. ~echo -e "Tutorial.\nThis text is doc2." > doc2.txt~ で文字列を書き込む。
+3. ~cat > doc3.txt~ のあと文章を標準入力に打ち込む。
+   例えば "Tutorial<Enterを押す>This text is doc3."
+   ~Ctrl-D~ で End of File を入力して抜け出す。
+4. ~cat doc2.txt doc3.txt > doc4.txt~ でテキストを結合する。
+5. ~ls | cat > doc5.txt~ でディレクトリ内容を書き出す。
+   (doc5.txtに"doc5.txt"が書き込まれている。このことから、このコマンドの実行順序が分かる。)
+
+*** ファイルをGitの管理下におく
+~git status~ で状態を確認する。
+"Untracked files:" の中に新しく作成したファイルやディレクトリが一覧として表示されている。
+~git add .~ で全てのファイルをステージングする。
+~git status~ でGit内部でファイルがどのように扱われているか(状態がどのように変化したか)確認する。
+~git commit -m "First commit"~ で変更内容をコミットする。
+1番最初のコミットなので、通例コミットメッセージは "First commit" にしておいた。
+が、内容は何でもいい。
+~git config~ をしなさい、という警告が出た場合は ~git~ に名前とメールアドレスをまだ教えていないので
+指定されたコマンドで ~git~ に情報を与えることができる。このチュートリアルでは無視して進める。
+~git status~ で現在の状態を、 ~git log~ でコミット履歴を表示して確認する。
+
+*** ファイルを編集する
+作業用に新しく~feature-tutorial~ ブランチを切るために、 ~git checkout -b feature-tutorial~ を入力する。
+~git status~ や ~git branch~ で現在ローカルに存在するブランチを確認する。
+
+好きなようにファイルを編集する。
+好きなものが無い場合のチュートリアル：
+1. ~echo "This is the end of the line." >> doc2.txt~ で文字列を追加する。
+2. ~cat * | grep "x" > doc6.txt~ で、現在のディレクトリにある全てのファイル内容を結合して、 "x" を含むものだけをファイルに書き出す。
+3. Macの場合 ~sed -i "" "s/is doc/is not doc/g" doc4.txt~ ; Linuxの場合 ~sed -i -e "s/is doc/is not doc/g" doc4.txt~
+   でdoc4.txtの中身を簡単に修正して上書きする。
+   MacとLinuxはデフォルトで入っている ~sed~ の系統が違っており、コマンドのオプションの振舞いが異なるので注意する。
+   ~sed~ コマンドは便利だが、意図しない結果にならないか注意する。
+4. ~awk 'NR <= 3{print NR "---" $0 }; NR > 3{gsub("txt", "jpeg", $0); print $0}' doc5.txt > doc7.txt~ で
+   3行目までは行番号を追加し、4行目以降は拡張子をjpegに変更して、新しいファイルに書き出す。
+   古い ~awk~ コマンドでは上書き保存はできないので注意する。
+   ~awk~ は表の形をしたテキストの抽出作業に向いているので、 ~sed~ と良いところを補い合って使いわける。
+
+~git status~ で変更内容を確認する。
+チュートリアルどおりにファイルを編集すれば、
+"Changes not staged for commit:" には変更をした doc2.txt と doc4.txt が、
+Untracked files: には新しく追加した doc6.txt と doc7.txt が追加されている。
+
+*** ファイルの変更履歴をGitで管理する
+変更内容をコミットする。
+
+doc4.txt と doc6.txt の変更だけを履歴に残したい場合、
+~git add doc4.txt doc6.txt~ でステージング、
+~git diff --staged~ でステージングしたファイルの変更内容を確認、
+~git commit -m "Fix typos and Add doc6"~ でコミット。
+~git log~ で履歴を確認。
+
+変更を履歴に残さず取り消したい場合、
+~cat doc2.txt~ で現在の内容を確認、
+~git restore doc2.txt~ で doc2.txt の変更内容を取り消し、
+~cat doc2.txt~ で再確認すると変更した内容(付け加えた最後の行)が無くなる。
+doc7.txt は Git に管理されていないので、 ~rm doc7.txt~ で消せばいい。
+~git status~ をすると、 "nothing to commit, working tree clean" と表示される。
+いま取り消した内容は Git に管理される前に取り消したので、 Git で再度復元することはできない点に注意する。
+
+これまでの応用で間違って Git に管理されたファイルを消してしまった場合でも復元できる。
+~rm doc3.txt~ でファイルを削除、
+~ls~ でファイルが削除されていることを確認、
+~git restore doc3.txt~ でファイルに行った変更を取り消し、
+つまりファイルを復元できる。
+
+*** ブランチをマージする
+現在のブランチ feature-tutorial で加えた内容を main に合流させる。
+~git checkout main~ か ~git switch main~ でブランチを main に変更する。
+環境によっては main ではなく master の場合もある。
+~ls~ でディレクトリの内容が元に戻ったことを確認する。
+(チュートリアルどおりの場合は、doc6.txtが無くなる。ファイル内容も変更前のままである。)
+
+~git merge --no-ff feature-tutorial~ で feature-tutorial ブランチを main ブランチにマージする。
+ターミナル上で実行すると、コミットメッセージを変更するための ~vi~ が立ち上がる。
+問題が無ければ ~:qa~ で ~vi~ から抜け出す。
+マージする際には ~--no-ff~ をつけて ~fast-forward~ しないでマージすると、枝分かれしたブランチの履歴が残る。
+コミットの数が増えてしまうが、変更履歴のまとまりを確認しやすい。
+~feature-tutorial~ はもう要らないので、 ~git branch -d feature-tutorial~ でブランチを削除する。
+
+*** 変更ログを分かりやすくする
+~/.gitconfig に以下を入力する。
+#+begin_example
+  [alias]
+      graph = log --graph --date-order --all -C -M --pretty=format:'%h %Cred%d %Cgreen%ad %Cblue%cn %Creset%s' --date=short
+#+end_example
+これで ~git graph~ を打つとブランチの枝分かれなども確認できて便利。
+
+** 練習2の準備: Gitレポジトリの準備
+*** レポジトリの準備
+
 *** Githubのアカウント作成
 
 *** リポジトリのクローン
@@ -91,31 +186,25 @@ file:src/gittutorial/module.py モジュールの中の ~print_favorites~ 関数
 ** Gitコマンドの確認
 - 参考： https://qiita.com/kohga/items/dccf135b0af395f69144
 
-*** ~git clone~
-リモートレポジトリをローカルに複製(クローン)する。
+- ~git init~ :: 現在のディレクトリをGitで管理する。
 
-*** ~git branch <branch>~
-ブランチを作成。
+- ~git clone~ :: リモートレポジトリをローカルに複製(クローン)する。
 
-*** ~git checkout <branch>~ or ~git switch <branch>~
-ブランチへ切り替え。
+- ~git branch <branch>~ :: ブランチを作成。
 
-*** ~git checkout -b <branch>~
-ブランチを作成して切り替え。
+- ~git checkout <branch>~ or ~git switch <branch>~ :: ブランチへ切り替え。
 
-*** ~git add <file>~
-変更したファイルをステージに追加する。
-~git add .~ で変更した全ファイルをステージに追加する。
+- ~git checkout -b <branch>~ :: ブランチを作成して切り替え。
 
-*** ~git commit -m "message"~
-ステージに追加したファイルの変更履歴を記録(コミット)する。
-コミットメッセージは必ず書く。
-コミットメッセージは英語で、基本的に動詞から始めるのが良い。
+- ~git add <file>~ :: 変更したファイルをステージに追加する。
+  ~git add .~ で変更した全ファイルをステージに追加する。
 
-*** ~git merge <branch>~
+- ~git commit -m "message"~ :: ステージに追加したファイルの変更履歴を記録(コミット)する。
+  コミットメッセージは必ず書く。
+  コミットメッセージは英語で、基本的に動詞から始めるのが良い。
 
+- ~git merge <branch>~ ::
 
-*** ~git fetch~
-リモートレポジトリの変更内容を取得。
+- ~git fetch~ :: リモートレポジトリの変更内容を取得。
 
-*** ~git pull~
+- ~git pull~ ::
