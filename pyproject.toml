@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gittutorial"
+dynamic = ["version"]
+requires-python = ">= 3.8"
+author = "sugayu"
+description = "Git Tutorial Package."
+readme = "README.org"
+license = {text = "MIT License"}
+dependencies = [
+    "numpy"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.dynamic]
+version = {attr = "gittutorial._version.__version__"}
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+]
+
+[tool.black]
+skip-string-normalization = true
