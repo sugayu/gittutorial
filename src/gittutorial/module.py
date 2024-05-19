@@ -13,7 +13,7 @@ def print_favorites() -> None:
     Please explain in the docstring what this function is.
     '''
     # "list[str]" clarifies that "favorites" contains strings.
-    favorites: list[str] = ['Git', 'Football']
+    favorites: list[str] = ['Git', 'Tennis', 'Football']
 
     print('Your favorite things:')
     for fav in favorites:
