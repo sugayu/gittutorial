@@ -13,7 +13,11 @@ def print_favorites() -> None:
     Please explain in the docstring what this function is.
     '''
     # "list[str]" clarifies that "favorites" contains strings.
-    favorites: list[str] = ['Git', 'Tennis', 'Football']
+    favorites: list[str] = [
+        'Git',
+        'Tennis',
+        'Football',
+    ]
 
     print('Your favorite things:')
     for fav in favorites:
@@ -22,7 +26,9 @@ def print_favorites() -> None:
 
 def print_what_working_on() -> None:
     '''Print what you are working on.'''
-    works: list[str] = ['JWST and ALMA observations of high redshift galaxies']
+    works: list[str] = [
+        'JWST and ALMA observations of high redshift galaxies',
+    ]
 
     print('What are you working on?:')
     for w in works:
