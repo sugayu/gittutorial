@@ -1,4 +1,10 @@
-* 練習2の準備: Gitレポジトリの準備---sshやpipなど
+* 練習1の準備
+** Gitコマンドの準備
+~which git~ で ~git~ コマンドが使えるかどうか確認する。
+~which git~ の出力で ~git~ コマンドが存在するパスが返ってきたらコマンドが使える。
+Homebrewを使っているなら ~brew install git~ で最新版をインストールしてもいいかも。
+
+* 練習3の準備: Githubアカウントの準備
 ** Githubのアカウント作成
 Githubアカウントを持っていなければ作成する。
 今度使い続けることを考慮したうえでアカウント名を考えると良い。
@@ -37,22 +43,6 @@ New SSH Key から新しい鍵を登録する。
 
 ssh 接続はパスワード認証よりも鍵認証の方が推奨されているので、今後もここで作った鍵を使って、同様にログインできるようにすればいい。
 サーバーに公開鍵を置く方法はインターネットで調べるとたくさん出てくる。
-
-** Python環境の構築
-この項目は Git とは直接関係ないのでやらなくてもいい。
-ここで設定をしておくと、 Python パッケージを作る際に気をつけるべきことの話につながる。
-
-必須ではないがおすすめ： ~conda~ で新しく環境を作成する。
-環境を作成したのち、その環境でチュートリアル用のコードをダウンロードする。
-#+begin_src bash
-  conda create -n gittutorial python=3.9
-  conda activate gittutorial
-  pip install git+ssh://git@github.com/sugayu/gittutorial.git
-#+end_src
-正しくダウンロードできていれば、以下のコードが動く。詳細は次の節で。
-#+begin_src bash
-  python -c "from gittutorial import print_favorites; print_favorites()"
-#+end_src
 
 ** リポジトリのクローン
 練習2用の作業ディレクトリ上で、チュートリアルのためのリポジトリをGithubからクローンする。

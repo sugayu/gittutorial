@@ -2,7 +2,8 @@
 Git のチュートリアルを提供するためのリポジトリ。
 
 1. [[./docs/git_basics.org][Gitの基礎]]
-2. [[./docs/tutorial.org][Gitチュートリアル]]
+2. [[./docs/preparation.org][チュートリアルの準備]]
+3. [[./docs/tutorial.org][Gitチュートリアル]]
 
 * 参考資料
 ** Gitコマンドの確認

@@ -216,8 +216,6 @@ gittutorial ディレクトリのルートで、以下のコマンドを打っ�
 [[../src/gittutorial/module.py]] モジュールの中の ~print_favorites~ 関数を編集して、
 ~favorites~ 変数にあなたの好きなものを追加する。
 
-** Gitを使って編集した内容をリモートリポジトリに反映する
-
 *** コミット
 変更したファイルをステージに追加し、メッセージをつけてコミットする。
 コミットメッセージの書き方はプロジェクトごとに異なるので、決まりがあるのならばその決まりに従って書かなければならない。
@@ -227,7 +225,10 @@ gittutorial ディレクトリのルートで、以下のコマンドを打っ�
 - 英語の動詞から始めるのが良いとされている。
 - [[https://qiita.com/shikichee/items/a5f922a3ef3aa58a1839][GitHubで使われている実用英語コメント集 #Python - Qiita]]
 
+** Gitを使って編集した内容をリモートリポジトリに反映する
+
 *** プッシュ
+複数人がチュートリアルに参加している場合には、この部分は初めは一人だけが行うと良い。
 通常他人が作ったリポジトリにはプッシュできないが、コラボレータになっていると可能となる。
 コードの変更を他のメンバーに通知してプロジェクトに反映するため、 ~git push~ でリモートリポジトリにプッシュする。
 リモートリポジトリに ~feature-<name>~ ブランチが作成されていないので、プッシュと同時に作成する。
@@ -264,19 +265,44 @@ gittutorial ディレクトリのルートで、以下のコマンドを打っ�
 2. リベースを使って事前に解決する。
 以下では 2 について述べる。
 
+** feature-<name> ブランチをリベースする
 リベースをすることで、 ~feature-<name>~ の分岐元を最新の ~dev~ へと変更する。
-このときに生じる衝突を解決するためには、、、
+このとき、予想どおり衝突が生じるのでこれを解決する。
+
+1. ~git checkout feature-<name>~ でブランチを変更する。
+2. ~git rebase dev~ で ~feature-<name>~ の分岐元を ~dev~ ブランチの現在位置へと変更する。
+   このコマンドにより、 =CONFLICT (content): Merge conflict in src/gittutorial/module.py= が出る。
+3. ~git status~ で状況を見て、「both modified: src/gittutorial/module.py」となっていることを確認する。
+4. エディタで編集して衝突箇所を直す。
+5. ~git status~ で衝突が解決されていることを確認し、 ~git rebase --continue~ でリベースを実行する。
+6. ~git graph~ などでブランチの根本が変更されていることを確認する。
 
 ** プルリクエスト、承認、変更の確認を繰り返す
 [[プルリクエストを出し、コード作成者が承認する][#プルリクエストを出し、コード作成者が承認する]] から [[手元の feature-dev ブランチに最新の dev の内容を反映する][#手元の feature-dev ブランチに最新の dev の内容を反映する]] を繰り返す。
 可能ならプルリクエストを承認する人を交代しながらやる。
 
-全員が変更を終えたら、リポジトリ管理者が  ~dev~ の内容を ~main~ にマージする。
+全員が変更を終えたら、リポジトリ管理者が  ~dev~ の内容を ~master~ にマージする。
 
 * 練習4: Pythonコード開発
 
+** Python環境の構築
+この項目は Git とは直接関係ない。
+ここで設定をしておくと、 Python パッケージを作る際に気をつけるべきことの話につながる。
+
+~conda~ で新しく環境を作成する。
+環境を作成したのち、その環境でチュートリアル用のコードをダウンロードする。
+#+begin_src bash
+  conda create -n gittutorial python=3.9
+  conda activate gittutorial
+  pip install git+ssh://git@github.com/sugayu/gittutorial.git
+#+end_src
+正しくダウンロードできていれば、以下のコードが動く。
+#+begin_src bash
+  python -c "from gittutorial import print_favorites; print_favorites()"
+#+end_src
+
 ** pip のふるまいを確認する
-~main~ ブランチがアップデートされたので、 ~pip~ でパッケージのアップデートを試みる。
+~master~ ブランチがアップデートされたので、 ~pip~ でパッケージのアップデートを試みる。
 #+begin_src bash
   pip install --upgrade git+ssh://git@github.com/sugayu/gittutorial.git
 #+end_src
