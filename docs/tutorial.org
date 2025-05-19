@@ -119,22 +119,6 @@ doc4.txt と doc6.txt の変更だけを履歴に残したい場合、
 コミットの数が増えてしまうが、変更履歴のまとまりを確認しやすい。
 ~dev~ が要らない場合は ~git branch -d dev~ でブランチを削除できるが、練習2で使うのでここでは残しておく。
 
-** 便利なことがら
-
-*** 変更ログを分かりやすくする
-~/.gitconfig に以下を入力する。
-#+begin_example
-  [alias]
-      graph = log --graph --date-order --all -C -M --pretty=format:'%h %Cred%d %Cgreen%ad %Cblue%cn %Creset%s' --date=short
-#+end_example
-これで ~git graph~ を打つとブランチの枝分かれなども確認できて便利。
-
-*** エディタにGitツールを入れる
-プログラムはエディタで編集するので、エディタ上でGitを動かしてしまうのが1番簡単。
-エディタとしてVSCodeを使っているのであれば、VSCodeにGitを管理するプラグイン (GitGraph?) を入れてしまうのが良いだろう。
-
-*** Git completionを入れる
-
 * 練習2: Github上でリポジトリを管理する
 ここまででGitに管理されている記録はローカル環境にしか存在しないので、別PCでの作業やチームでの協働作業はできない。
 
