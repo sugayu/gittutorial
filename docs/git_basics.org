@@ -45,6 +45,7 @@ GithubはGitのためのリモートリポジトリ作成を支援している�
    - ブランチは後に説明するが、今回の作業用の変更履歴を作成するということ。
 2. ファイルを編集する。
 3. Gitを使って更新されたファイル一覧と差分を確認する(status)。
+   慣れてきたら飛ばしても良い。
 4. 変更を保存したいファイルを選択する(staging, ~add~)。
 5. ステージに載せたファイルをコミット(commit)する。
    - コミットすることで、それまでのGitで変更履歴が管理できる。
@@ -52,35 +53,91 @@ GithubはGitのためのリモートリポジトリ作成を支援している�
 6. 2から5までの作業を繰り返す。
 7. 作業ブランチを元のブランチに合流(merge)させる。
 
-[画像]
+#+begin_src mermaid :file emacs-org-figures/gitlog-alone.png :scale 2 :background-color transparent :eval never-export
+graph TB
+  A["main(最初)"] --- H@{shape: braces, label: 1 ブランチ切る}
+  H --> D(2 ファイル編集)
+  G --- I@{shape: braces, label: 7 合流 merge}
+  I --> B
+
+  subgraph mainブランチ
+  A -.-> B["main(編集後)"]
+  end
+
+  subgraph devブランチ
+  D --> E(3 差分確認 status)
+  E --> F(4 ステージング add)
+  F --> G(5 コミット commit)
+  G -- 6 繰り返し --> D
+  end
+#+end_src
+
+#+RESULTS:
+[[file:emacs-org-figures/gitlog-alone.png]]
 
 ** 複数人でGitを使っている場合
-既に作業ディレクトリがGitで管理されている場合(ローカルリポジトリの場合)の作業の長れを示す。
+既に作業ディレクトリがGitで管理されており、リモートリポジトリが作成されている場合の作業の長れを示す。
 複数人で作業をしていることを想定している。
 
-1. (必要があれば)作業用のブランチ(branch)を切る。
+1. 最新の内容をリモートリポジトリから持ってくる(pull)。
+2. (必要があれば)作業用のブランチ(branch)を切る。
    - ブランチは後に説明するが、つまり他の人の邪魔にならない自分だけの変更履歴を作成するということ。
-2. ファイルを編集する。
-3. Gitを使って更新されたファイル一覧と差分を確認する。
-4. 変更を保存したいファイルを選択する(staging)。
-5. ステージに載せたファイルをコミット(commit)する。
+3. ファイルを編集する。
+4. Gitを使って更新されたファイル一覧と差分を確認する。
+5. 変更を保存したいファイルを選択する(staging)。
+6. ステージに載せたファイルをコミット(commit)する。
    - コミットすることで、それまでのGitで変更履歴が管理できる。
    - 付随してコミットメッセージを必ず残す。これにより変更履歴一覧を作成できる。
-6. 2から5までの作業を繰り返す。
-7. (必要があれば)リモートリポジトリにプッシュ(push)する。
+7. 3から6までの作業を繰り返す。
+8. 変更内容を共同編集者と共有するために、リモートリポジトリにプッシュ(push)する。
    - プッシュすることで大元のリポジトリに変更通知を行う。
    - プッシュしなければ、これまでの変更はあくまでも自分のパソコン内の変更にすぎない。
-8. (必要があり、かつ権限があれば)作業ブランチを大元のブランチにマージ(merge)する。
+9. (必要があり、かつ権限があれば)作業ブランチを大元のブランチにマージ(merge)する。
    - 自分の変更履歴を、他の人も作業している大元の変更履歴に合流させる。
    - マージ(したあとにプッシュ)することで、自分の作業履歴が他の人の作業にも影響を及ぼす。
+10. 変更したmainブランチをローカルに反映する(pull)。
+
+#+begin_src mermaid :file emacs-org-figures/gitlog-remote.png :scale 2 :background-color transparent :eval never-export
+graph TB
+  O["origin/main"] --- V@{shape: braces, label: 1 リモートの内容を反映 pull}
+  V --> A
+  A["main(最初)"] --- W@{shape: braces, label: 2 ブランチ切る}
+  W --> D(3 ファイル編集)
+  G --- X@{shape: braces, label: 8 リモートへ変更を通知する push}
+  X --> P[orign/dev]
+  Q --- Y@{shape: braces, label: 10 変更をローカルに反映 pull}
+  Y --> B
+
+  subgraph "origin (remote)"
+  O -.-> Q
+  P --- R@{shape: braces, label: 9 合流 merge}
+  R --> Q[origin/main]
+  end
+
+  subgraph "main (local)"
+  A -.-> B["main(編集後)"]
+  end
+
+  subgraph "dev (local)"
+  D --> E(4 差分確認 status)
+  E --> F(5 ステージング add)
+  F --> G(6 コミット commit)
+  G -- 7 繰り返し --> D
+  end
+#+end_src
+
+#+RESULTS:
+[[file:emacs-org-figures/gitlog-remote.png]]
 
 他に
 1. 定期的にフェッチ(fetch)とプル(pull)をすることで、リモートリポジトリの変更を監視する。
    - フェッチするとリモートリポジトリの変更通知が得られる。通知だけ。(ちょっと語弊があるが)
    - プルは「現在のブランチに対してフェッチのあとマージ」という意味で、「フェッチして得られたリモートリポジトリの変更状態に、自分のローカルリポジトリを合わせる」という作業を行う。
    - 定期的にこれらを行わないと、例えば以下のようなことが起こる。
-     - 自分の作業ブランチがはるか昔のリモートリポジトリから派生した変更履歴になっており、変更内容を大元に合流させようとしても、他の人がコードに手を加えすぎていて変更履歴どおしが衝突して簡単には合流させられない、
-2. リモートリポジトリの管理者は、他の人がプッシュしてきた作業ブランチの内容を確認し、問題が無ければ大元のブランチにマージする、という責任を負う。逆に言うと、責任の無い人は、こうした「他の作業者に影響を及ぼす作業」をしてはいけない。
+     - 自分の作業ブランチがはるか昔のリモートリポジトリから派生した変更履歴になっており、変更内容を大元に合流させようとしても、
+       他の人がコードに手を加えすぎていて変更履歴どおしが衝突して簡単には合流させられない、
+2. リモートリポジトリの管理者は、他の人がプッシュしてきた作業ブランチの内容を確認し、問題が無ければ大元のブランチにマージする、という責任を負う。
+   逆に言うと、責任の無い人は、こうした「他の作業者に影響を及ぼす作業」をしてはいけない。
 
 ** まだGitを使っていない場合
 
@@ -114,6 +171,27 @@ Gitではブランチをどのように切るかが大事な戦略であり、�
 3. ~dev~ ブランチを ~main~ ブランチにマージさせる。
 4. ~dev~ ブランチを消しても良い。
 
+#+begin_src mermaid :file emacs-org-figures/githubflow.png :scale 2 :background-color transparent :eval never-export
+%%{init: { 'gitGraph': { 'showCommitLabel': false } } }%%
+gitGraph
+  commit
+  branch dev
+  checkout dev
+  commit
+  commit
+  checkout main
+  merge dev
+  checkout dev
+  commit
+  checkout main
+  merge dev
+  checkout dev
+  commit
+#+end_src
+
+#+RESULTS:
+[[file:emacs-org-figures/githubflow.png]]
+
 ** Git flow
 中規模開発に向いているワークフローについて説明する。
 常に残しておくブランチが2種類、必要に応じて作るブランチが2種類ある。
@@ -137,6 +215,36 @@ Gitではブランチをどのように切るかが大事な戦略であり、�
 7. ~release~ ブランチを ~main~ ブランチにマージさせる。
 8. ~relase~ ブランチを ~dev~ ブランチにマージさせる。 ~relase~ ブランチを消す。
 
+#+begin_src mermaid :file emacs-org-figures/gitflow.png :scale 2 :background-color transparent :eval never-export
+%%{init: { 'gitGraph': { 'showCommitLabel': false } } }%%
+gitGraph
+  commit
+  branch dev order: 2
+  checkout dev
+  commit
+  branch feature1 order: 3
+  checkout feature1
+  commit
+  commit
+  commit
+  checkout dev
+  merge feature1
+  branch feature2 order: 4
+  checkout feature2
+  commit
+  commit
+  checkout dev
+  merge feature2
+  branch release order: 1
+  checkout release
+  commit
+  checkout main
+  merge release tag: "v1.0"
+#+end_src
+
+#+RESULTS:
+[[file:emacs-org-figures/gitflow.png]]
+
 * Github上でのコード公開
 単純にコードを公開するだけなら、github上にリポジトリを作成し、そこにコードをアップロードすればいい、
 便利に使ってもらうならば、いくつかの準備が必要である。
@@ -154,6 +262,7 @@ Gitではブランチをどのように切るかが大事な戦略であり、�
 
 * 注意
 ** Git で管理してはいけないもの
+- プライベートな設定が書かれているもの: ssh鍵、webサイトのトークン、など
 - これらは .gitignore ファイルにまとめておく
 
 ** Git で管理すべきでないもの
