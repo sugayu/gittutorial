@@ -18,6 +18,7 @@ def print_favorites() -> None:
         'Tennis',
         'Football',
 	'basketball',
+        'BASEBALL'
     ]
 
     print('Your favorite things:')
